@@ -1,0 +1,9 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "amethyst"
+version = "0.0.1"
+description = ""
+dependencies = ["rdkit ==2023.3.3"]
