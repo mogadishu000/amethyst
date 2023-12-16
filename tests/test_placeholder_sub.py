@@ -3,7 +3,7 @@ from typing import List
 from amethyst.amethyst import placeholder_atom_sub
 from rdkit.Chem.AllChem import MolToInchi, MolFromSmiles
 
-core_smi: str = 'CCN' # Ethylmine
+core_smi: str = 'CCN' # Ethylamine
 placeholder_atom: str = 'N' # Nitrogen atom
 r_groups = ['NCC', 'NC(O)C']
 core_mol = MolFromSmiles(core_smi)

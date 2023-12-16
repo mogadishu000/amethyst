@@ -2,8 +2,9 @@ from rdkit.Chem.rdchem import Atom, RWMol, Mol
 from rdkit.Chem.rdmolops import SanitizeMol, AddHs, Cleanup, RemoveAllHs
 from rdkit.Chem.AllChem import MolFromSmiles, ReplaceSubstructs
 from rdkit.Chem.EnumerateStereoisomers import EnumerateStereoisomers, StereoEnumerationOptions
-from typing import List, Union
+from typing import List, Union, Dict
 
+# Connecting atom is the first one
 def placeholder_atom_sub(core_mol: Mol, placeholder_atom: str, r_groups: Union[List[str], List[Mol]]) -> List[Mol]:
     mols = []
 
@@ -27,6 +28,6 @@ def placeholder_atom_sub(core_mol: Mol, placeholder_atom: str, r_groups: Union[L
 
 # Checks:
 # - bond validation
-# - 
-def general_sub():
+# - insertion of Mol's at right indices
+def general_sub(core_mol: Mol, subs: Dict[int, Union[str, Mol, Atom]]) -> List[Mol]:
     pass

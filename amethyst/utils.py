@@ -1,15 +1,21 @@
 from rdkit.Chem.rdchem import Atom, Mol
-from rdkit.Chem.rdmolfiles import MolToSmiles
+from rdkit.Chem.rdmolfiles import MolToSmiles, MolFromSmiles, AtomFromSmiles
 from rdkit.Chem.Draw import rdMolDraw2D
-from typing import Tuple
+from typing import Tuple, Union
 
 # Checks wheter passed SMILES string is a molecule or an atom
-def mol_or_atom():
-    pass
+# Works although a bit hacky
+def mol_or_atom(smiles: str) -> Union[Mol, Atom]:
+    try: 
+         a = Atom(smiles)
+         return a
+    except Exception as e:
+        return MolFromSmiles(smiles)
+
 
 # Returns an image of molecule with atom idx's
-def depict_mol(mol: Mol, filename: str = '', size: Tuple(int) = (1000, 1000)):
-    if filename is '':
+def depict_mol(mol: Mol, filename: str = '', size = (1000, 1000)):
+    if filename == '':
         filename = MolToSmiles(mol)
 
     d = rdMolDraw2D.MolDraw2DCairo(size[0], size[1])
