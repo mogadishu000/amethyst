@@ -5,6 +5,7 @@ from typing import Tuple, Union
 
 # Checks wheter passed SMILES string is a molecule or an atom
 # Works although a bit hacky
+# Should this go to io.py?
 def mol_or_atom(smiles: str) -> Union[Mol, Atom]:
     try: 
          a = Atom(smiles)

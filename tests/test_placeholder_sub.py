@@ -1,6 +1,6 @@
 import pytest
 from typing import List
-from amethyst.amethyst import placeholder_atom_sub
+from amethyst.substitution import placeholder_atom_sub
 from rdkit.Chem.AllChem import MolToInchi, MolFromSmiles
 
 core_smi: str = 'CCN' # Ethylamine

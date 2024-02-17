@@ -29,5 +29,7 @@ def placeholder_atom_sub(core_mol: Mol, placeholder_atom: str, r_groups: Union[L
 # Checks:
 # - bond validation
 # - insertion of Mol's at right indices
+# - if it works with rdRGroupDecomposition output
+# -- https://www.rdkit.org/docs/source/rdkit.Chem.rdRGroupDecomposition.html#rdkit.Chem.rdRGroupDecomposition.RGroupDecompositionParameters
 def general_sub(core_mol: Mol, subs: Dict[int, Union[str, Mol, Atom]]) -> List[Mol]:
     pass
