@@ -12,3 +12,9 @@ dependencies = [
     "pytest ==7.4.3",
     "networkx ==3.2.1",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "ipykernel ==6.29.2",
+    "pandas ==2.2.0",
+]
