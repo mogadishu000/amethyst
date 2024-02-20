@@ -33,3 +33,5 @@ def rgroup_format(smiles: str, safe_mode: bool = False) -> int:
         else:
             raise ValueError("No dummy atoms found")
         
+def relabel_dummy_atoms(smiles: str, type) -> str:
+    pass
