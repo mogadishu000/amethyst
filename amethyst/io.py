@@ -1,27 +1,32 @@
-import re
-from typing import Union, List
 import logging
+import re
+from typing import List, Union
+
 from rdkit.Chem.rdRGroupDecomposition import RGroupLabelling
 
 # Logic for input processing
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdRGroupDecomposition.html#rdkit.Chem.rdRGroupDecomposition.RelabelMappedDummies
 
-# Relabel dummy atoms bearing an R-group mapping (as atom map number, isotope or MDLRGroup label) 
+# Relabel dummy atoms bearing an R-group mapping (as atom map number, isotope or MDLRGroup label)
 # such that they will be displayed by the rendering code as R# rather than #*, :#, #:#, etc.
 
 # Additional safe_mode parameter in case there are multiple types used for god know what reason
 
 # For SMILES input use regex to find which type of dummy atoms was used
 # 1 - Atom map
-atom_map = re.compile(r'(\[\*\:?\d+\])')
+atom_map = re.compile(r"(\[\*\:?\d+\])")
 # 2 - Isotope
-isotope = re.compile(r'(\[\d+\*\])')
+isotope = re.compile(r"(\[\d+\*\])")
 # 3 - Mixed
+
 
 def rgroup_format(smiles: str, safe_mode: bool = False) -> int:
 
     if safe_mode:
-        if re.search(atom_map, smiles) is not None and re.search(isotope, smiles) is not None:
+        if (
+            re.search(atom_map, smiles) is not None
+            and re.search(isotope, smiles) is not None
+        ):
             logging.info("Mixed dummy atoms")
             return 3
     else:
@@ -33,6 +38,7 @@ def rgroup_format(smiles: str, safe_mode: bool = False) -> int:
             return RGroupLabelling.Isotope
         else:
             raise ValueError("No dummy atoms found")
-        
+
+
 def relabel_dummy_atoms(smiles: str, type: RGroupLabelling) -> str:
     pass
