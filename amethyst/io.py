@@ -1,6 +1,7 @@
 import re
 from typing import Union, List
 import logging
+from rdkit.Chem.rdRGroupDecomposition import RGroupLabelling
 
 # Logic for input processing
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdRGroupDecomposition.html#rdkit.Chem.rdRGroupDecomposition.RelabelMappedDummies
@@ -26,12 +27,12 @@ def rgroup_format(smiles: str, safe_mode: bool = False) -> int:
     else:
         if re.search(atom_map, smiles) is not None:
             logging.info("Atom map dummy atoms")
-            return 1
+            return RGroupLabelling.AtomMap
         elif re.search(isotope, smiles) is not None:
             logging.info("Isotope dummy atoms")
-            return 2
+            return RGroupLabelling.Isotope
         else:
             raise ValueError("No dummy atoms found")
         
-def relabel_dummy_atoms(smiles: str, type) -> str:
+def relabel_dummy_atoms(smiles: str, type: RGroupLabelling) -> str:
     pass
