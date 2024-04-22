@@ -5,7 +5,7 @@ from rdkit.Chem.rdchem import Atom, Mol
 from rdkit.Chem.rdmolfiles import AtomFromSmiles, MolFromSmiles, MolToSmiles
 
 
-# Checks wheter passed SMILES string is a molecule or an atom
+# Checks whether passed SMILES string is a molecule or an atom
 # Works although a bit hacky
 # Should this go to io.py?
 def mol_or_atom(smiles: str) -> Union[Mol, Atom]:
