@@ -1,3 +1,4 @@
+import itertools
 from typing import Dict, List, Union
 
 from loguru import logger
@@ -7,7 +8,9 @@ from rdkit.Chem.EnumerateStereoisomers import (
     StereoEnumerationOptions,
 )
 from rdkit.Chem.rdchem import Atom, Mol
-from rdkit.Chem.rdmolops import SanitizeMol
+from rdkit.Chem.rdmolops import SanitizeMol, molzip
+
+from amethyst.io import Substituents, parse_file_input
 
 logger.add(sink="substitution.log", level=10)
 
@@ -54,6 +57,15 @@ def placeholder_atom_sub(
 # - insertion of Mol's at right indices
 # - if it works with rdRGroupDecomposition output
 # -- https://www.rdkit.org/docs/source/rdkit.Chem.rdRGroupDecomposition.html#rdkit.Chem.rdRGroupDecomposition.RGroupDecompositionParameters
-def general_sub(core_mol: Mol, subs: Dict[int, Union[str, Mol, Atom]]) -> List[Mol]:
-    #
-    pass
+def general_sub(core_mol: Mol, subs: List[Substituents]) -> List[Mol]:
+    r_groups: List[Mol] = [x for x.subs in subs]
+    combinations = [x for x in itertools.product(*r_groups)]
+    output_mols = []
+
+    for sets in combinations:
+        sub_mol = core_mol
+        for r in sets:
+            sub_mol = molzip(sub_mol, r)
+        output_mols.append(sub_mol)
+
+    return output_mols

@@ -13,7 +13,7 @@ logger.add(sink="io.log", level=10)
 @dataclass
 class Substituents:
     r_num: int
-    subs: Union[List[str], List[Mol]]
+    subs: List[Mol]
 
 
 def parse_file_input(path: str, delimiter: Optional[str], r_num: Optional[int] = None):
