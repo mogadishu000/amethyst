@@ -7,6 +7,8 @@ from loguru import logger
 from rdkit.Chem.AllChem import Mol, MolFromSmiles, MolToSmiles
 from rdkit.Chem.rdRGroupDecomposition import RelabelMappedDummies, RGroupLabelling
 
+from amethyst.utils import mols_to_str
+
 logger.add(sink="io.log", level=10)
 
 
@@ -41,12 +43,18 @@ def parse_file_input(path: str, delimiter: Optional[str], r_num: Optional[int] =
         if delimiter is None:
             for i in file:
                 subs_list.append(MolFromSmiles(i))
+                logger.debug(f"SMILES added: {i}")
         else:
-            # TODO - separators other than new line NYI
-            logger.error(
-                "For the time being each SMILES string has to have it's own line."
-            )
-            raise (NotImplementedError("String separators NYI"))
+            lines: List[str] = file.readlines()
+            for i in lines:
+                split_lines: List[str] = lines[i].split(
+                    delimiter
+                )  # idk if that works lol
+                mols: List[Mol] = [MolFromSmiles(x) for x in split_lines]
+                subs_list.append(*mols)
+                logger.debug(f"SMILES added: {*split_lines,}")
+
+    logger.debug(f"Final sub list: {mols_to_str(subs_list)}")
 
     subs.subs = list(
         map(
@@ -56,3 +64,7 @@ def parse_file_input(path: str, delimiter: Optional[str], r_num: Optional[int] =
     )
 
     return subs
+
+
+def parse_string_input():
+    pass
