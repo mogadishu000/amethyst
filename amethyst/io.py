@@ -1,7 +1,7 @@
 import os
 import re
 from dataclasses import dataclass
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from loguru import logger
 from rdkit.Chem.AllChem import Mol, MolFromSmiles, MolToSmiles
@@ -18,13 +18,15 @@ class Substituents:
     subs: List[Mol]
 
 
-def parse_file_input(path: str, delimiter: Optional[str], r_num: Optional[int] = None):
+def parse_file_input(
+    path: str, delimiter: Optional[str] = None, r_num: Optional[int] = None
+) -> Substituents:
     if os.path.isfile(str):
         logger.debug("File path is good.")
         pass
     else:
         logger.error(f"{path} is not a file!")
-        raise (FileNotFoundError(f"{path} is not a file!"))
+        raise FileNotFoundError(f"{path} is not a file!")
 
     subs = Substituents()
 
@@ -35,7 +37,7 @@ def parse_file_input(path: str, delimiter: Optional[str], r_num: Optional[int] =
         m = re.match("[0-9]+", path_split[-1])
         subs.r_num = m.group(0)
 
-    logger.debug(f"File give for R{r_num}.")
+    logger.debug(f"File given for R{r_num}.")
 
     subs_list: List[Mol] = []
 
@@ -67,4 +69,8 @@ def parse_file_input(path: str, delimiter: Optional[str], r_num: Optional[int] =
 
 
 def parse_string_input():
+    pass
+
+
+def parse_mol_input(mols: Union[List[List[Mol]], Dict[str, List[Mol]]]):
     pass

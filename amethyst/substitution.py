@@ -58,7 +58,7 @@ def placeholder_atom_sub(
 # - if it works with rdRGroupDecomposition output
 # -- https://www.rdkit.org/docs/source/rdkit.Chem.rdRGroupDecomposition.html#rdkit.Chem.rdRGroupDecomposition.RGroupDecompositionParameters
 def general_sub(core_mol: Mol, subs: List[Substituents]) -> List[Mol]:
-    r_groups: List[Mol] = [x for x.subs in subs]
+    r_groups: List[Mol] = [x.subs for x in subs]
     combinations: List[Mol] = [x for x in itertools.product(*r_groups)]
     output_mols: List[Mol] = []
 
