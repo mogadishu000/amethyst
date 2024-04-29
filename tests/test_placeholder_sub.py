@@ -32,7 +32,7 @@ def test_placeholder_substitution_front():
 core_smi_inner_N: str = "CNC"
 core_mol_inner_N: Mol = MolFromSmiles(core_smi_inner_N)
 core_smi_inner_Lu: str = "C[Lu]C"
-core_mol_inner_Lu: Mol = MolToSmiles(core_smi_inner_Lu)
+core_mol_inner_Lu: Mol = MolFromSmiles(core_smi_inner_Lu)
 
 # FIXME - Rewrite proper SMILES, these are wrong (should the insertion be in brackets)
 

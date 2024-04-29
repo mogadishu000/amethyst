@@ -1,0 +1,4 @@
+*CC
+*CCC
+*CNCC
+*CC(O)C

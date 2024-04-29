@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional, Union
 
 import click
+from loguru import logger
 from rdkit.Chem.AllChem import Mol, MolFromSmiles
 from rdkit.Chem.rdRGroupDecomposition import RelabelMappedDummies, RGroupLabelling
 
@@ -10,7 +11,6 @@ from amethyst.io import (
     parse_mol_input,
 )
 from amethyst.substitution import general_sub, placeholder_atom_sub
-from loguru import logger
 
 logger.add("amethyst_main.log", level=10)
 
@@ -24,7 +24,7 @@ def enumerate(
         Union[List[List[Mol]], Dict[str, List[Mol]]]
     ] = None,  # what a fucking abomination
     enantiomers: bool = False,
-):
+) -> List[Mol]:
     if subs_path is not None and subs_mol is not None:
         logger.error("Both sources for R-groups passed")
         raise ValueError("Only one source of R-groups must be passed")
@@ -42,3 +42,5 @@ def enumerate(
         core = RelabelMappedDummies(
             MolFromSmiles(core), outputLabels=RGroupLabelling.AtomMap
         )
+
+    return general_sub(core, r_groups)

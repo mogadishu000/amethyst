@@ -7,17 +7,15 @@ name = "amethyst"
 version = "0.0.1"
 description = ""
 dependencies = [
-    "rdkit ==2023.3.3",
     "autopep8 ==2.0.4",
-    "pytest ==7.4.3",
-    "loguru ==0.7.2",
     "click ==8.1.7",
+    "loguru ==0.7.2",
+    "pytest ==7.4.3",
+    "rdkit ==2023.9.6",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "ipykernel ==6.29.2",
-    "pandas ==2.2.0",
     "black ==24.2.0",
     "ruff ==0.2.2",
 ]
