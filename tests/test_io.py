@@ -35,3 +35,7 @@ def test_file_parser_r_num_in_filename():
 
 def test_mol_parser():
     pass
+
+
+def test_absolute_relative_paths():
+    pass

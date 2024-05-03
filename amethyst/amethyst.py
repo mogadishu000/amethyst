@@ -17,14 +17,30 @@ logger.add("amethyst_main.log", level=10)
 
 def enumerate(
     core: Union[str, Mol],
+    r_num: int = 1,
     subs_path: Optional[str] = None,
     delimiter: Optional[str] = None,
-    r_num: Optional[int] = None,
     subs_mol: Optional[
         Union[List[List[Mol]], Dict[str, List[Mol]]]
     ] = None,  # what a fucking abomination
     enantiomers: bool = False,
 ) -> List[Mol]:
+    """Enumerates scaffold molecule with provided R-groups. Can generate enantiomers.
+
+    Args:
+        core (Union[str, Mol]): Scaffold molecule
+        r_num (int, optional): R#. Defaults to None.
+        subs_path (Optional[str], optional): Path to file with R-groups. Defaults to None.
+        delimiter (Optional[str], optional): Delimiter used in provided file, can be any valid string. Defaults to newline.
+        subs_mol (Optional[ Union[List[List[Mol]], Dict[str, List[Mol]]] ], optional): R-groups provided in form of RDKit molecules. Defaults to None.
+        enantiomers (Optional[Bool], optional):  Flag determining generation of enantiomers after the enumeration. Defaults to False
+
+    Raises:
+        ValueError: Raised either when both sources of molecules were given or none of them.
+
+    Returns:
+        List[Mol]: List of enumerated molecules.
+    """
     if subs_path is not None and subs_mol is not None:
         logger.error("Both sources for R-groups passed")
         raise ValueError("Only one source of R-groups must be passed")

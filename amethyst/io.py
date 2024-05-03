@@ -14,13 +14,34 @@ logger.add(sink="io.log", level=10)
 
 @dataclass
 class Substituents:
+    """Dataclass used for storing a list of R-groups with their respective R#.
+
+    Attributes:
+        r_num (int): R#
+        subs (List[Mol]): List of substituents in Mol object
+
+    """
+
     r_num: int
     subs: List[Mol]
 
-
+#FIXME - Set the atom map to appropriate R#
 def parse_file_input(
     filepath: str, delimiter: Optional[str] = None, r_num: Optional[int] = None
 ) -> Substituents:
+    """Parses provided file to a Substituents dataclass. There is planned support for multiple R-groups in one file. For now please supply one R-group per file.
+
+    Args:
+        filepath (str): Path to file with R-groups. Required.
+        delimiter (Optional[str], optional): Delimiter for one-line files. Defaults to newline.
+        r_num (Optional[int], optional): Number of R-group attached to the Substituents dataclass. Defaults to R1.
+
+    Raises:
+        FileNotFoundError: Raised if supplied path isn't a file.
+
+    Returns:
+        Substituents: Parsed file saved to dataclass.
+    """
     if os.path.isfile(filepath):
         logger.debug("File path is good.")
         pass
@@ -46,6 +67,7 @@ def parse_file_input(
                 subs_list.append(MolFromSmiles(i))
                 logger.debug(f"SMILES added: {i}")
         else:
+            # FIXME - change to readlines(). maybe another flag for parsing multiple r_nums in one file?
             line: str = file.readline()
             logger.debug(line)
             split_lines: List[str] = line.split(delimiter)
@@ -67,5 +89,5 @@ def parse_string_input():
     pass
 
 
-def parse_mol_input(mols: Union[List[List[Mol]], Dict[str, List[Mol]]]):
+def parse_mol_input(mols: Union[List[List[Mol]], Dict[str, List[Mol]]]) -> Substituents:
     pass
