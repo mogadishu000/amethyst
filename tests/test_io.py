@@ -39,3 +39,8 @@ def test_mol_parser():
 
 def test_absolute_relative_paths():
     pass
+
+
+def test_isotope_num():
+    # NOTE - [2*]
+    pass

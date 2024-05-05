@@ -1,5 +1,5 @@
 import itertools
-from typing import List, Union, Optional, Bool
+from typing import Bool, List, Optional, Union
 
 from loguru import logger
 from rdkit.Chem.AllChem import MolFromSmiles, MolToSmiles, ReplaceSubstructs
@@ -15,7 +15,7 @@ from amethyst.io import Substituents, parse_file_input
 logger.add(sink="substitution.log", level=10)
 
 
-# #REVIEW - Do I need this. Can just use RelabelMappedDummies to change them into atom maps.
+# REVIEW - Do I need this. Can just use RelabelMappedDummies to change them into atom maps.
 def placeholder_atom_sub(
     core_mol: Mol,
     placeholder_atom: str,
@@ -57,8 +57,10 @@ def placeholder_atom_sub(
 # - insertion of Mol's at right indices
 # - if it works with rdRGroupDecomposition output
 # -- https://www.rdkit.org/docs/source/rdkit.Chem.rdRGroupDecomposition.html#rdkit.Chem.rdRGroupDecomposition.RGroupDecompositionParameters
-def general_sub(core_mol: Mol, subs: List[Substituents], relabelled: Optional[Bool] = True) -> List[Mol]:
-    """Combines two molecules with atom maps as attachment points. 
+def general_sub(
+    core_mol: Mol, subs: List[Substituents], relabelled: Optional[Bool] = True
+) -> List[Mol]:
+    """Combines two molecules with atom maps as attachment points.
 
     Args:
         core_mol (Mol): Scaffold
@@ -67,9 +69,8 @@ def general_sub(core_mol: Mol, subs: List[Substituents], relabelled: Optional[Bo
 
     Returns:
         List[Mol]: _description_
-    """    
-    #FIXME - Won't work, needs R#'s parsing so it knows which one is for which
-    r_groups: List[Mol] = [x.subs for x in subs] #FIXME - This just puts all the groups into one list without R# 
+    """
+    r_groups: List[List[Mol]] = [x.subs for x in subs]
     combinations: List[Mol] = [x for x in itertools.product(*r_groups)]
     output_mols: List[Mol] = []
 

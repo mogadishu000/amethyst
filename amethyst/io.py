@@ -25,16 +25,17 @@ class Substituents:
     r_num: int
     subs: List[Mol]
 
-#FIXME - Set the atom map to appropriate R#
+
+# FIXME - Set the atom map to appropriate R#
 def parse_file_input(
-    filepath: str, delimiter: Optional[str] = None, r_num: Optional[int] = None
+    filepath: str, r_num: int, delimiter: Optional[str] = None
 ) -> Substituents:
     """Parses provided file to a Substituents dataclass. There is planned support for multiple R-groups in one file. For now please supply one R-group per file.
 
     Args:
         filepath (str): Path to file with R-groups. Required.
         delimiter (Optional[str], optional): Delimiter for one-line files. Defaults to newline.
-        r_num (Optional[int], optional): Number of R-group attached to the Substituents dataclass. Defaults to R1.
+        r_num (Optional[int], optional): Number of R-group attached to the Substituents dataclass. Can be passed as R# (case insensitive) in a filename.  Defaults to R1.
 
     Raises:
         FileNotFoundError: Raised if supplied path isn't a file.
@@ -51,11 +52,11 @@ def parse_file_input(
 
     if r_num is None:
         path_split = re.split(r"(\\\\)|(/)|(\\)", filepath)
-        m = re.match("[0-9]+", path_split[-1])
+        m = re.match("[rR][0-9]", path_split[-1])
         if m is not None:
             r_num = m.group(0)
         else:
-            r_num = 1
+            raise ValueError("R# is missing.")
 
     logger.debug(f"File given for R{r_num}.")
 
@@ -89,5 +90,19 @@ def parse_string_input():
     pass
 
 
-def parse_mol_input(mols: Union[List[List[Mol]], Dict[str, List[Mol]]]) -> Substituents:
-    pass
+def parse_mol_input(mols: List[List[Mol]]) -> List[Substituents]:
+    """Parses list of molecules to a Substituents class. R# is handled via the list index (n+1) e.g., first list of Mol's in the list passed will have R1 number and so on.
+
+    Args:
+        mols (List[List[Mol]]): List containing another list of R-groups.
+
+    Returns:
+        List[Substituents]: Returns subs parsed into a list of Substituents dataclass.
+    """
+    r_num = 1
+    substituents_list = []
+    for i in mols:
+        substituents_list.append(Substituents(r_num, i))
+        r_num = r_num + 1
+
+    return substituents_list
