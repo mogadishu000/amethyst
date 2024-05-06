@@ -30,15 +30,16 @@ class Substituents:
 def parse_file_input(
     filepath: str, r_num: int, delimiter: Optional[str] = None
 ) -> Substituents:
-    """Parses provided file to a Substituents dataclass. There is planned support for multiple R-groups in one file. For now please supply one R-group per file.
+    """Parses provided file to a Substituents dataclass. There is planned support for multiple R-groups in one file. For now please supply one R-group per file. Accepts R-groups marked as either isotope labels or atom maps. Newline separated file can only be for one R#.
 
     Args:
         filepath (str): Path to file with R-groups. Required.
+        r_num (Optional[int]): Number of R-group attached to the Substituents dataclass. Can be passed as R# (case insensitive) in a filename.  Defaults to R1.
         delimiter (Optional[str], optional): Delimiter for one-line files. Defaults to newline.
-        r_num (Optional[int], optional): Number of R-group attached to the Substituents dataclass. Can be passed as R# (case insensitive) in a filename.  Defaults to R1.
 
     Raises:
         FileNotFoundError: Raised if supplied path isn't a file.
+        ValueError: Raised if no r_num was provided.
 
     Returns:
         Substituents: Parsed file saved to dataclass.
@@ -61,19 +62,23 @@ def parse_file_input(
     logger.debug(f"File given for R{r_num}.")
 
     subs_list: List[Mol] = []
+    r = f"[{r_num}*]"
 
     with open(filepath, "r") as file:
         if delimiter is None:
             for i in file:
-                subs_list.append(MolFromSmiles(i))
-                logger.debug(f"SMILES added: {i}")
+                m = re.sub(r"\[[0-9]\*\]|\[.\:[0-9]\]", r, i)
+                subs_list.append(MolFromSmiles(m))
+                logger.debug(f"SMILES added: {m}")
         else:
-            # FIXME - change to readlines(). maybe another flag for parsing multiple r_nums in one file?
-            line: str = file.readline()
-            logger.debug(line)
-            split_lines: List[str] = line.split(delimiter)
-            [subs_list.append(MolFromSmiles(x)) for x in split_lines]
-            logger.debug(f"SMILES added: {*split_lines,}")
+            # FIXME - maybe another flag for parsing multiple r_nums in one file?
+            lines: List[str] = file.readlines()
+            logger.debug(*lines)
+            for line in lines:
+                m = re.sub(r"\[[0-9]\*\]|\[.\:[0-9]\]", r, line)
+                split_lines: List[str] = m.split(delimiter)
+                [subs_list.append(MolFromSmiles(x)) for x in split_lines]
+                logger.debug(f"SMILES added: {*split_lines,}")
 
     logger.debug(f"Final sub list: {mols_to_str(subs_list)}")
 
@@ -90,7 +95,7 @@ def parse_string_input():
     pass
 
 
-def parse_mol_input(mols: List[List[Mol]]) -> List[Substituents]:
+def parse_mol_input(mols: List[List[Union[Mol, str]]]) -> List[Substituents]:
     """Parses list of molecules to a Substituents class. R# is handled via the list index (n+1) e.g., first list of Mol's in the list passed will have R1 number and so on.
 
     Args:
@@ -102,7 +107,34 @@ def parse_mol_input(mols: List[List[Mol]]) -> List[Substituents]:
     r_num = 1
     substituents_list = []
     for i in mols:
-        substituents_list.append(Substituents(r_num, i))
+        if type(i[0]) is Mol:
+            logger.debug("Mol input detected.")
+            mols_smi = [MolToSmiles(x) for x in i]
+        elif type(i[0]) is str:
+            logger.debug("String input detected.")
+            mols_smi = mols[r_num - 1]
+        else:
+            raise ValueError("Wrong input type.")
+
+        smis_relabelled = []
+        for j in i:
+            r = f"[*:{r_num}]"
+            logger.debug(f"Inner: {j}")
+            if type(j) is str:
+                m = re.sub(r"\[[0-9]\*\]|\[\*\:[0-9]\]", r, j)
+            elif type(j) is Mol:
+                smi = MolToSmiles(j)
+                m = re.sub(r"\[[0-9]\*\]|\[\*\:[0-9]\]", r, smi)
+            else:
+                raise ValueError("Wrong input type.")
+            logger.debug(f"Relabelled SMILES: {m}")
+            smis_relabelled.append(m)
+            logger.debug(f"SMILES relabelled: {*smis_relabelled, }")
+
+        mols_relabelled = [MolFromSmiles(x) for x in smis_relabelled]
+        substituents_list.append(Substituents(r_num, mols_relabelled))
+        logger.debug(f"R{r_num} SMILES: {mols_to_str(mols_relabelled)}")
+
         r_num = r_num + 1
 
     return substituents_list

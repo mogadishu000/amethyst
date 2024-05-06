@@ -1,5 +1,5 @@
 import itertools
-from typing import Bool, List, Optional, Union
+from typing import List, Optional, Union
 
 from loguru import logger
 from rdkit.Chem.AllChem import MolFromSmiles, MolToSmiles, ReplaceSubstructs
@@ -58,7 +58,7 @@ def placeholder_atom_sub(
 # - if it works with rdRGroupDecomposition output
 # -- https://www.rdkit.org/docs/source/rdkit.Chem.rdRGroupDecomposition.html#rdkit.Chem.rdRGroupDecomposition.RGroupDecompositionParameters
 def general_sub(
-    core_mol: Mol, subs: List[Substituents], relabelled: Optional[Bool] = True
+    core_mol: Mol, subs: List[Substituents], relabelled: Optional[bool] = True
 ) -> List[Mol]:
     """Combines two molecules with atom maps as attachment points.
 

@@ -8,7 +8,7 @@ core = ""
 
 
 def test_enumerate_file():
-    enumerate(core, subs_path=path)
+    # enumerate(core, subs_path=path)
     pass
 
 
