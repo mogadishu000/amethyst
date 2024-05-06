@@ -102,7 +102,8 @@ def test_mol_parser_multiple_r_mol():
     ]
     assert smi_2_result == [
         CanonSmiles(x) for x in ["[*:2]CCCCCC", "CCC[*:2]C", "CCC[*:2]"]
-    ]   
+    ]
+
 
 def test_absolute_relative_paths():
     pass

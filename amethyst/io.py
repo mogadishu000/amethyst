@@ -91,15 +91,14 @@ def parse_file_input(
     return subs
 
 
-def parse_string_input():
-    pass
-
-
 def parse_mol_input(mols: List[List[Union[Mol, str]]]) -> List[Substituents]:
     """Parses list of molecules to a Substituents class. R# is handled via the list index (n+1) e.g., first list of Mol's in the list passed will have R1 number and so on.
 
     Args:
         mols (List[List[Mol]]): List containing another list of R-groups.
+
+    Raises:
+        ValueError: Raised when input isn't Mol or str.
 
     Returns:
         List[Substituents]: Returns subs parsed into a list of Substituents dataclass.
