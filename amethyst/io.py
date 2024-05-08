@@ -26,7 +26,6 @@ class Substituents:
     subs: List[Mol]
 
 
-# FIXME - Set the atom map to appropriate R#
 def parse_file_input(
     filepath: str,
     r_num: int,
@@ -75,9 +74,11 @@ def parse_file_input(
                 subs_list.append(MolFromSmiles(m))
                 logger.debug(f"SMILES added: {m}")
         else:
-            # FIXME - maybe another flag for parsing multiple r_nums in one file?
             lines: List[str] = file.readlines()
             logger.debug(*lines)
+            if r_num == 0:
+                # NOTE - multiple r_nums branch
+                pass
             for line in lines:
                 m = re.sub(r"\[[0-9]\*\]|\[.\:[0-9]\]", r, line)
                 split_lines: List[str] = m.split(delimiter)

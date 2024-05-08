@@ -1,6 +1,5 @@
 from typing import List, Optional, Union
 
-import click
 from loguru import logger
 from rdkit.Chem.AllChem import Mol, MolFromSmiles, MolToSmiles
 from rdkit.Chem.rdRGroupDecomposition import RelabelMappedDummies, RGroupLabelling
