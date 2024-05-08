@@ -21,3 +21,19 @@ def test_general_sub_relabelled():
             "COCc1cccc(NCc2ccccc2)c1",
         ]
     ]
+
+
+def test_general_sub_unlabelled():
+    subs = parse_mol_input(r)
+    core_unlabelled = MolFromSmiles("[2*]Cc1cccc([1*])c1")
+    result = general_sub(core_unlabelled, subs, False)
+    assert len(result) == 4
+    assert [CanonSmiles(MolToSmiles(x)) for x in result] == [
+        CanonSmiles(x)
+        for x in [
+            "CNc1cccc(Cc2ccccc2)c1",
+            "CNc1cccc(COC)c1",
+            "c1ccc(CNc2cccc(Cc3ccccc3)c2)cc1",
+            "COCc1cccc(NCc2ccccc2)c1",
+        ]
+    ]

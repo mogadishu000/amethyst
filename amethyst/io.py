@@ -1,7 +1,7 @@
 import os
 import re
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
 from loguru import logger
 from rdkit.Chem.AllChem import Mol, MolFromSmiles, MolToSmiles
@@ -28,7 +28,10 @@ class Substituents:
 
 # FIXME - Set the atom map to appropriate R#
 def parse_file_input(
-    filepath: str, r_num: int, delimiter: Optional[str] = None
+    filepath: str,
+    r_num: int,
+    delimiter: Optional[str] = None,
+    multiple_rs: Optional[bool] = False,
 ) -> Substituents:
     """Parses provided file to a Substituents dataclass. There is planned support for multiple R-groups in one file. For now please supply one R-group per file. Accepts R-groups marked as either isotope labels or atom maps. Newline separated file can only be for one R#.
 
@@ -36,6 +39,7 @@ def parse_file_input(
         filepath (str): Path to file with R-groups. Required.
         r_num (Optional[int]): Number of R-group attached to the Substituents dataclass. Can be passed as R# (case insensitive) in a filename.  Defaults to R1.
         delimiter (Optional[str], optional): Delimiter for one-line files. Defaults to newline.
+        multiple_rs (Optional[bool], optional): Flag determining if each line in a file should be considered different R-group. First line is R1 and so on. Defaults to False.
 
     Raises:
         FileNotFoundError: Raised if supplied path isn't a file.
@@ -109,17 +113,17 @@ def parse_mol_input(mols: List[List[Union[Mol, str]]]) -> List[Substituents]:
         if type(i[0]) is Mol:
             logger.debug("Mol input detected.")
             mols_smi = [MolToSmiles(x) for x in i]
-        elif type(i[0]) is str:
+        elif isinstance(i[0], str):
             logger.debug("String input detected.")
             mols_smi = mols[r_num - 1]
         else:
             raise ValueError("Wrong input type.")
 
         smis_relabelled = []
-        for j in i:
+        for j in mols_smi:
             r = f"[*:{r_num}]"
             logger.debug(f"Inner: {j}")
-            if type(j) is str:
+            if isinstance(j, str):
                 m = re.sub(r"\[[0-9]\*\]|\[\*\:[0-9]\]", r, j)
             elif type(j) is Mol:
                 smi = MolToSmiles(j)

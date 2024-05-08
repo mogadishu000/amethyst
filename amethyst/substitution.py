@@ -3,15 +3,11 @@ from typing import List, Optional, Union
 
 from loguru import logger
 from rdkit.Chem.AllChem import MolFromSmiles, MolToSmiles, ReplaceSubstructs
-from rdkit.Chem.EnumerateStereoisomers import (
-    EnumerateStereoisomers,
-    StereoEnumerationOptions,
-)
 from rdkit.Chem.rdchem import Mol
 from rdkit.Chem.rdmolops import SanitizeMol, molzipFragments
 from rdkit.Chem.rdRGroupDecomposition import RelabelMappedDummies, RGroupLabelling
 
-from amethyst.io import Substituents, parse_file_input
+from amethyst.io import Substituents
 from amethyst.utils import mols_to_str
 
 logger.add(sink="substitution.log", level=10)
@@ -76,6 +72,7 @@ def general_sub(
         pass
     else:
         RelabelMappedDummies(core_mol, outputLabels=RGroupLabelling.AtomMap)
+        logger.debug(f"Relabelled core: {MolToSmiles(core_mol)}")
     r_groups: List[List[Mol]] = [x.subs for x in subs]
     combinations: List[Mol] = [x for x in itertools.product(*r_groups)]
     logger.debug([[MolToSmiles(x) for x in y] for y in combinations])
