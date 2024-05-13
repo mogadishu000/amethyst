@@ -2,7 +2,7 @@ from typing import List, Union
 
 from rdkit.Chem.Draw import rdMolDraw2D
 from rdkit.Chem.rdchem import Atom, Mol
-from rdkit.Chem.rdmolfiles import AtomFromSmiles, MolFromSmiles, MolToSmiles
+from rdkit.Chem.rdmolfiles import MolFromSmiles, MolToSmiles
 
 
 # Checks whether passed SMILES string is a molecule or an atom
@@ -31,5 +31,4 @@ def depict_mol(mol: Mol, filename: str = "", size=(1000, 1000)):
 
 
 def mols_to_str(mols: List[Mol]):
-    string_smiles = [MolToSmiles(x) for x in mols]
-    return " ".join(string_smiles)
+    return [MolToSmiles(x) for x in mols]

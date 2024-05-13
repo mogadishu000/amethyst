@@ -10,22 +10,22 @@ final_smiles = [CanonSmiles(x) for x in ["*CC", "*CCC", "*CNCC", "*CC(O)C"]]
 def test_file_parser_newline():
     newline = "tests\\newline_input.txt"
     newline_subs = parse_file_input(newline, r_num=1)
-    assert len(newline_subs.subs) == 4
-    smi = [CanonSmiles(MolToSmiles(x)) for x in newline_subs.subs]
+    assert len(newline_subs[0].subs) == 4
+    smi = [CanonSmiles(MolToSmiles(x)) for x in newline_subs[0].subs]
     assert smi == final_smiles
 
 
 def test_file_parser_delimiter():
     comma = "tests\\comma_input.txt"
     comma_subs = parse_file_input(comma, r_num=1, delimiter=",")
-    assert len(comma_subs.subs) == 4
-    smi_comma = [CanonSmiles(MolToSmiles(x)) for x in comma_subs.subs]
+    assert len(comma_subs[0].subs) == 4
+    smi_comma = [CanonSmiles(MolToSmiles(x)) for x in comma_subs[0].subs]
     assert smi_comma == final_smiles
 
     semicolon = "tests\\semicolon_input.txt"
     semicolon_subs = parse_file_input(semicolon, r_num=1, delimiter=";")
-    assert len(semicolon_subs.subs) == 4
-    smi_semicolon = [CanonSmiles(MolToSmiles(x)) for x in semicolon_subs.subs]
+    assert len(semicolon_subs[0].subs) == 4
+    smi_semicolon = [CanonSmiles(MolToSmiles(x)) for x in semicolon_subs[0].subs]
     assert smi_semicolon == final_smiles
 
 

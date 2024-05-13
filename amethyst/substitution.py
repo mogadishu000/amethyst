@@ -10,8 +10,6 @@ from rdkit.Chem.rdRGroupDecomposition import RelabelMappedDummies, RGroupLabelli
 from amethyst.io import Substituents
 from amethyst.utils import mols_to_str
 
-logger.add(sink="substitution.log", level=10)
-
 
 # REVIEW - Do I need this. Can just use RelabelMappedDummies to change them into atom maps.
 def placeholder_atom_sub(
@@ -74,13 +72,12 @@ def general_sub(
         RelabelMappedDummies(core_mol, outputLabels=RGroupLabelling.AtomMap)
         logger.debug(f"Relabelled core: {MolToSmiles(core_mol)}")
     r_groups: List[List[Mol]] = [x.subs for x in subs]
-    combinations: List[Mol] = [x for x in itertools.product(*r_groups)]
+    combinations: List[List[Mol]] = [x for x in itertools.product(*r_groups)]
     logger.debug([[MolToSmiles(x) for x in y] for y in combinations])
     output_mols: List[Mol] = []
 
     for sets in combinations:
-        sub_mol: Mol = core_mol
-        temp = [sub_mol, *sets]
+        temp = [core_mol, *sets]
         logger.debug(f"Current sub: {mols_to_str(temp)}")
         sub_mol = molzipFragments(temp)
         output_mols.append(sub_mol)

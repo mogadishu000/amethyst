@@ -1,5 +1,7 @@
-import click
 from typing import Optional
+
+import click
+
 from amethyst.amethyst import enumerate
 
 

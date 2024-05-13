@@ -2,11 +2,11 @@ from typing import List, Optional, Union
 
 from loguru import logger
 from rdkit.Chem.AllChem import Mol, MolFromSmiles, MolToSmiles
-from rdkit.Chem.rdRGroupDecomposition import RelabelMappedDummies, RGroupLabelling
 from rdkit.Chem.EnumerateStereoisomers import (
     EnumerateStereoisomers,
     StereoEnumerationOptions,
 )
+from rdkit.Chem.rdRGroupDecomposition import RelabelMappedDummies, RGroupLabelling
 
 from amethyst.io import (
     Substituents,
@@ -72,4 +72,7 @@ def enumerate(
         else:
             return stereoisomers
 
-    return analogues
+    if output_smi:
+        return [MolToSmiles(x) for x in analogues]
+    else:
+        return analogues
