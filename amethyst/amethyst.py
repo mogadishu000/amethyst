@@ -2,11 +2,11 @@ from typing import List, Optional, Union
 
 from loguru import logger
 from rdkit.Chem.AllChem import Mol, MolFromSmiles, MolToSmiles
+from rdkit.Chem.rdRGroupDecomposition import RelabelMappedDummies, RGroupLabelling
 from rdkit.Chem.EnumerateStereoisomers import (
     EnumerateStereoisomers,
     StereoEnumerationOptions,
 )
-from rdkit.Chem.rdRGroupDecomposition import RelabelMappedDummies, RGroupLabelling
 
 from amethyst.io import (
     Substituents,
@@ -15,12 +15,13 @@ from amethyst.io import (
 )
 from amethyst.substitution import general_sub
 
-logger.add("amethyst_main.log", level=10)
+logger.add("amethyst.log", level=10)
 
 
 def enumerate(
     core: Union[str, Mol],
-    r_num: int = 1,
+    r_num: int,
+    multiple_rs: bool = False,
     subs_path: Optional[str] = None,
     delimiter: Optional[str] = None,
     subs_mol: Optional[List[List[Union[Mol, str]]]] = None,
@@ -31,7 +32,8 @@ def enumerate(
 
     Args:
         core (Union[str, Mol]): Scaffold molecule
-        r_num (int): R#. Defaults to R1.
+        r_num (int): R#.
+        multiple_rs (bool): Flag determining if each line in a file should be considered different R-group. First line is R1 and so on. Defaults to False.
         subs_path (Optional[str], optional): Path to file with R-groups. Defaults to None.
         delimiter (Optional[str], optional): Delimiter used in provided file, can be any valid string. Defaults to newline.
         subs_mol (Optional[List[List[Union[Mol, str]]]], optional): R-groups provided in form of RDKit molecules. Defaults to None.
@@ -49,10 +51,15 @@ def enumerate(
         raise ValueError("Only one source of R-groups must be passed")
     elif subs_path is not None:
         logger.debug("Filepath passed")
-        r_groups: Substituents = parse_file_input(subs_path, delimiter, r_num)
+        if r_num is not None:
+            r_groups: List[Substituents] = parse_file_input(subs_path, r_num, delimiter)
+        elif multiple_rs:
+            r_groups: List[Substituents] = parse_file_input(subs_path, delimiter=delimiter, multiple_rs=True)
+        else:
+            raise ValueError("Either pass r_num or set multiple_rs to True")
     elif subs_mol is not None:
         logger.debug("Mol list passed")
-        r_groups: Substituents = parse_mol_input(subs_mol)
+        r_groups: List[Substituents] = parse_mol_input(subs_mol)
     else:
         logger.error("No R-groups were passed")
         raise ValueError("No R-groups passed!")
@@ -62,11 +69,11 @@ def enumerate(
             MolFromSmiles(core), outputLabels=RGroupLabelling.AtomMap
         )
 
-    analogues = general_sub(core, r_groups)
+    analogues: List[Mol] = general_sub(core, r_groups)
 
     if enantiomers:
         params = StereoEnumerationOptions(tryEmbedding=True, unique=True)
-        stereoisomers = list(EnumerateStereoisomers(analogues, options=params))
+        stereoisomers = [EnumerateStereoisomers(x, options=params) for x in analogues]
         if output_smi:
             return [MolToSmiles(x) for x in stereoisomers]
         else:
