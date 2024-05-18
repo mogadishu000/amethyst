@@ -13,6 +13,7 @@ dependencies = [
     "pytest ==7.4.3",
     "rdkit ==2023.9.6",
 ]
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 dev = [

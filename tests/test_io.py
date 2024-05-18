@@ -1,4 +1,3 @@
-# NOTE - checks for relative and absolute file paths
 import pytest
 from rdkit.Chem.AllChem import CanonSmiles, MolFromSmiles, MolToSmiles
 

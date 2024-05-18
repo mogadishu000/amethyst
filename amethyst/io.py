@@ -8,7 +8,6 @@ from rdkit.Chem.AllChem import Mol, MolFromSmiles, MolToSmiles
 
 from amethyst.utils import mols_to_str
 
-logger.add(sink="io.log", level=10)
 
 
 @dataclass
@@ -36,7 +35,7 @@ def parse_file_input(
 
     Args:
         filepath (str): Path to file with R-groups. Required.
-        r_num (Optional[int]): Number of R-group attached to the Substituents dataclass. Can be passed as R# (case insensitive) in a filename.  Defaults to R1.
+        r_num (int): Number of R-group attached to the Substituents dataclass. Can be passed as R# (case insensitive) in a filename.
         delimiter (Optional[str], optional): Delimiter for one-line files. Defaults to newline.
         multiple_rs (Optional[bool], optional): Flag determining if each line in a file should be considered different R-group. First line is R1 and so on. Defaults to False.
 
@@ -54,7 +53,7 @@ def parse_file_input(
         logger.error(f"{filepath} is not a file!")
         raise FileNotFoundError(f"{filepath} is not a file!")
 
-    if r_num is None:
+    if r_num is None and not multiple_rs:
         path_split = re.split(r"(\\\\)|(/)|(\\)", filepath)
         m = re.match("[rR][0-9]+", path_split[-1])
         if m is not None:
