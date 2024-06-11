@@ -14,13 +14,14 @@ from amethyst.io import (
     parse_mol_input,
 )
 from amethyst.substitution import general_sub
+from amethyst.utils import mols_to_str
 
 logger.add("amethyst.log", level=10)
 
 
 def enumerate(
     core: Union[str, Mol],
-    r_num: int,
+    r_num: Optional[int] = None,
     multiple_rs: bool = False,
     subs_path: Optional[str] = None,
     delimiter: Optional[str] = None,
@@ -60,14 +61,15 @@ def enumerate(
     elif subs_mol is not None:
         logger.debug("Mol list passed")
         r_groups: List[Substituents] = parse_mol_input(subs_mol)
+        [logger.debug(f"Parsed R-Groups: {mols_to_str(x.subs)}") for x in r_groups]
     else:
         logger.error("No R-groups were passed")
         raise ValueError("No R-groups passed!")
 
     if type(core) is not Mol:
-        core = RelabelMappedDummies(
-            MolFromSmiles(core), outputLabels=RGroupLabelling.AtomMap
-        )
+        core = MolFromSmiles(core)
+    
+    RelabelMappedDummies(core, outputLabels=RGroupLabelling.AtomMap)
 
     analogues: List[Mol] = general_sub(core, r_groups)
 

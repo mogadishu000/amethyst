@@ -78,6 +78,8 @@ def general_sub(
 
     for sets in combinations:
         temp = [core_mol, *sets]
+        logger.debug(f"Output mols: {mols_to_str(output_mols)}")
+        logger.debug(f"Temp: {mols_to_str(temp)}")
         logger.debug(f"Current sub: {mols_to_str(temp)}")
         sub_mol = molzipFragments(temp)
         output_mols.append(sub_mol)

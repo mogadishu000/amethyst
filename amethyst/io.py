@@ -27,7 +27,7 @@ class Substituents:
 # NOTE - refactor regexes maybe?
 def parse_file_input(
     filepath: str,
-    r_num: int,
+    r_num: Optional[int] = None,
     delimiter: Optional[str] = None,
     multiple_rs: Optional[bool] = False,
 ) -> List[Substituents]:
@@ -57,7 +57,7 @@ def parse_file_input(
         path_split = re.split(r"(\\\\)|(/)|(\\)", filepath)
         m = re.match("[rR][0-9]+", path_split[-1])
         if m is not None:
-            r_num = m.group(0)
+            r_num = int(m.group(0))
         else:
             raise ValueError("R# is missing.")
 
